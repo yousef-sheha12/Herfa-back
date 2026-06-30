@@ -9,6 +9,10 @@ namespace Herfa_back.Data
         public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
         public DbSet<BlacklistedToken> BlacklistedTokens { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+        //Person 2 : Mohamed Samy
+        public DbSet<ArtisanProfile> ArtisanProfiles { get; set; }
+        public DbSet<Category> Categories { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
