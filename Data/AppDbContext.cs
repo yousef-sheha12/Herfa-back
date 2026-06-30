@@ -13,6 +13,11 @@ namespace Herfa_back.Data
         //Person 2 : Mohamed Samy
         public DbSet<ArtisanProfile> ArtisanProfiles { get; set; }
         public DbSet<Category> Categories { get; set; }
+
+        //Person3 : Dai 
+        public DbSet<ServiceRequest> ServiceRequests { get; set; }
+        public DbSet<ServiceOffer> ServiceOffers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
