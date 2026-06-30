@@ -9,5 +9,7 @@
         public string? AvatarUrl { get; set; }
         public UserRole Role { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        // Navigation property for ArtisanProfile add by Mohamed Samy
+        public ArtisanProfile ArtisanProfile { get; set; }
     }
 }
