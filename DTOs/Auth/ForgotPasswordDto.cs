@@ -1,4 +1,4 @@
-namespace Herfa_back.DTOs
+namespace Herfa_back.DTOs.Auth
 {
     public class ForgotPasswordDto
     {

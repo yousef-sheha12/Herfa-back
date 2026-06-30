@@ -1,7 +1,7 @@
-﻿using Herfa_back.Models;
+﻿using Herfa_back.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace Herfa_back.DTOs
+namespace Herfa_back.DTOs.Auth
 {
     public class RegisterDto
     {

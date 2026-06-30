@@ -1,15 +1,17 @@
-﻿namespace Herfa_back.Models
+﻿using Herfa_back.Models.Enums;
+
+namespace Herfa_back.Models
 {
-    public class User
+    public class User : BaseEntity
     {
-        public int Id { get; set; } 
         public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; }= string.Empty;
         public string? AvatarUrl { get; set; }
         public UserRole Role { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        // Navigation property for ArtisanProfile add by Mohamed Samy
-        public ArtisanProfile ArtisanProfile { get; set; }
+        public ArtisanProfile? ArtisanProfile { get; set; }
+        public ICollection<ServiceRequest> ServiceRequests { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
+
     }
 }

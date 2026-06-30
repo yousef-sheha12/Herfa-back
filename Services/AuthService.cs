@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using BCrypt.Net;
-using Herfa_back.DTOs;
+using Herfa_back.DTOs.Auth;
 using Herfa_back.Helpers;
 using Herfa_back.Interfaces.IRepository;
 using Herfa_back.Interfaces.IService;
