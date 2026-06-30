@@ -1,4 +1,4 @@
-﻿using Herfa_back.DTOs;
+﻿using Herfa_back.DTOs.Auth;
 
 namespace Herfa_back.Interfaces.IService
 {

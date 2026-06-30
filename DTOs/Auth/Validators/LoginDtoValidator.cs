@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using Herfa_back.DTOs;
+using Herfa_back.DTOs.Auth;
 
-namespace Herfa_back.DTOs.Validators
+namespace Herfa_back.DTOs.Auth.Validators
 {
     public class LoginDtoValidator : AbstractValidator<LoginDto>
     {

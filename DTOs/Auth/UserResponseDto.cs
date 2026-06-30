@@ -1,8 +1,7 @@
-﻿namespace Herfa_back.DTOs
+﻿namespace Herfa_back.DTOs.Auth
 {
-    public class UserResponseDto
+    public class UserResponseDto : BaseEntity
     {
-        public Guid Id { get; set; }
         public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty; 

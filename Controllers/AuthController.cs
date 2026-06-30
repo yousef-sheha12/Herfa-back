@@ -1,4 +1,4 @@
-﻿using Herfa_back.DTOs;
+﻿using Herfa_back.DTOs.Auth;
 using Herfa_back.Interfaces.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

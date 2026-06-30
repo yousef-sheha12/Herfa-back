@@ -1,4 +1,6 @@
-﻿namespace Herfa_back.Models
+﻿using Herfa_back.Models.Enums;
+
+namespace Herfa_back.Models
 {
     public class User : BaseEntity
     {
@@ -7,6 +9,11 @@
         public string PasswordHash { get; set; }= string.Empty;
         public string? AvatarUrl { get; set; }
         public UserRole Role { get; set; }
-        //public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public ArtisanProfile? ArtisanProfile { get; set; }
+        //public ICollection<ServiceRequest> ServiceRequests { get; set; }
+        //public ICollection<Notification> Notifications { get; set; }
+
+
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Herfa_back.Models
+﻿namespace Herfa_back.Models.Enums
 {
     public enum UserRole
     {
