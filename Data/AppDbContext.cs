@@ -9,6 +9,9 @@ namespace Herfa_back.Data
         public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
         public DbSet<BlacklistedToken> BlacklistedTokens { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        // Person-4
+        public DbSet<Job> Jobs { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
