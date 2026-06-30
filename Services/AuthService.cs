@@ -21,12 +21,11 @@ namespace Herfa_back.Services
             _userRepository = userRepository;
             _jwtHelper = jwtHelper;
         }
-        private async Task<string> GenerateRefreshTokenAsync(Guid userId)
+        private async Task<string> GenerateRefreshTokenAsync(int userId)
         {
             var refreshTokenValue = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
             var refreshToken = new RefreshToken
             {
-                Id = Guid.NewGuid(),
                 UserId = userId,
                 Token = refreshTokenValue,
                 ExpiresAt = DateTime.UtcNow.AddDays(30)
@@ -46,7 +45,6 @@ namespace Herfa_back.Services
 
             var user = new User
             {
-                Id = Guid.NewGuid(),
                 Username = dto.UserName,
                 Email = dto.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
@@ -115,7 +113,6 @@ namespace Herfa_back.Services
                 var resetToken = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
                 var resetTokenEntity = new PasswordResetToken
                 {
-                    Id = Guid.NewGuid(),
                     Email = dto.Email,
                     Token = resetToken,
                     ExpiresAt = DateTime.UtcNow.AddHours(1)
@@ -200,7 +197,6 @@ namespace Herfa_back.Services
 
             var blacklisted = new BlacklistedToken
             {
-                Id = Guid.NewGuid(),
                 Jti = jti,
                 ExpiresAt = jwtToken.ValidTo
             };
@@ -210,7 +206,7 @@ namespace Herfa_back.Services
             var userIdClaim = jwtToken.Claims
                 .FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-            if (Guid.TryParse(userIdClaim, out var userId))
+            if (int.TryParse(userIdClaim, out var userId))
             {
                 await _userRepository.RevokeUserRefreshTokensAsync(userId);
             }

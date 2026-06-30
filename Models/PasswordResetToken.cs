@@ -2,7 +2,7 @@ namespace Herfa_back.Models
 {
     public class PasswordResetToken
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Email { get; set; } = string.Empty;
         public string Token { get; set; } = string.Empty;
         public DateTime ExpiresAt { get; set; }

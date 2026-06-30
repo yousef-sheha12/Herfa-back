@@ -5,7 +5,7 @@ namespace Herfa_back.Interfaces.IRepository
     public interface IUserRepository
     {
         Task<User?> GetByEmailAsync(string email);
-        Task<User?> GetByIdAsync(Guid id);
+        Task<User?> GetByIdAsync(int id);
         Task AddAsync(User user);
         Task SaveChangesAsync();
         Task AddPasswordResetTokenAsync(PasswordResetToken resetToken);
@@ -15,6 +15,6 @@ namespace Herfa_back.Interfaces.IRepository
         Task AddRefreshTokenAsync(RefreshToken refreshToken);
         Task<RefreshToken?> GetRefreshTokenAsync(string token);
         Task RevokeRefreshTokenAsync(string token);
-        Task RevokeUserRefreshTokensAsync(Guid userId);
+        Task RevokeUserRefreshTokensAsync(int userId);
     }
 }

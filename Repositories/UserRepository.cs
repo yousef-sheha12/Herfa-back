@@ -19,7 +19,7 @@ namespace Herfa_back.Repositories
                 .FirstOrDefaultAsync(x => x.Email == email);
         }
 
-        public async Task<User?> GetByIdAsync(Guid id)
+        public async Task<User?> GetByIdAsync(int id)
         {
             return await _context.Users
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -79,7 +79,7 @@ namespace Herfa_back.Repositories
             }
         }
 
-        public async Task RevokeUserRefreshTokensAsync(Guid userId)
+        public async Task RevokeUserRefreshTokensAsync(int userId)
         {
             var tokens = await _context.RefreshTokens
                 .Where(x => x.UserId == userId && !x.IsRevoked)
