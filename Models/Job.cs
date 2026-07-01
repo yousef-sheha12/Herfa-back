@@ -10,9 +10,9 @@
         public DateTime? CompletedAt { get; set; }
 
         // Navigation properties
-         //public ServiceRequest ServiceRequest { get; set; }// will be uncommented after person2,3,5
-        public ArtisanProfile Artisan { get; set; }
-        public User Client { get; set; }
-        //public Review? Review { get; set; }// will be uncommented after person2,3,5
+        public ServiceRequest ServiceRequest { get; set; } = null!;
+        public ArtisanProfile Artisan { get; set; } = null!;
+        public User Client { get; set; } = null!;
+        public Review? Review { get; set; }
     }
 }

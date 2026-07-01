@@ -1,4 +1,5 @@
 ﻿using Herfa_back.Models;
+using Herfa_back.Models.Enums;
 
 namespace Herfa_back.Interfaces.IRepository
 {
@@ -10,5 +11,6 @@ namespace Herfa_back.Interfaces.IRepository
         Task<List<Job>> GetByClientAsync(int clientId);
         Task AddAsync(Job job);
         Task UpdateAsync(Job job);
+        Task UpdateServiceRequestStatusAsync(int serviceRequestId, ServiceRequestStatus status);
     }
 }
