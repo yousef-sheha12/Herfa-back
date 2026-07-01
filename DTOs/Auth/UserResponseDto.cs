@@ -1,4 +1,5 @@
-﻿namespace Herfa_back.DTOs.Auth
+﻿using Herfa_back.Models;
+namespace Herfa_back.DTOs.Auth
 {
     public class UserResponseDto : BaseEntity
     {
