@@ -11,8 +11,8 @@ namespace Herfa_back.Models
         public UserRole Role { get; set; }
 
         public ArtisanProfile? ArtisanProfile { get; set; }
-        //public ICollection<ServiceRequest> ServiceRequests { get; set; }
-        //public ICollection<Notification> Notifications { get; set; }
+        public ICollection<ServiceRequest> ServiceRequests { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
 
 
     }

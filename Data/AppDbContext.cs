@@ -10,7 +10,7 @@ namespace Herfa_back.Data
         public DbSet<BlacklistedToken> BlacklistedTokens { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
-        // Person-4
+        // Person-4 : Abdelhameed
         public DbSet<Job> Jobs { get; set; }
 
 

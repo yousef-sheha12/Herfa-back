@@ -44,6 +44,9 @@ namespace Herfa_back
 
             builder.Services.AddScoped<JwtHelper>();
 
+            //Person-4 : Abdelhameed
+            builder.Services.AddScoped<JobRepository>();
+            builder.Services.AddScoped<JobService>();
 
             // ================= JWT AUTH =================
 
