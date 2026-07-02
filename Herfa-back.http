@@ -1,0 +1,6 @@
+@Herfa_back_HostAddress = http://localhost:5084
+
+GET {{Herfa_back_HostAddress}}/Auth/
+Accept: application/json
+
+###

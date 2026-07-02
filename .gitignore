@@ -1,0 +1,33 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+*.userosscache
+*.sln.docstates
+*.user
+.vs/
+## NuGet
+**/[Pp]ackages/*
+*.nupkg
+*.snupkg
+
+## IDE
+.vscode/
+.idea/
+*.swp
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Build
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
+
+## Secrets
+**/appsettings.*.json
+!appsettings.Development.json
+!appsettings.json
