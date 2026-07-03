@@ -9,7 +9,9 @@ namespace Herfa_back.Controllers
     [Route("api/categories")]
     public class CategoryController : ControllerBase
     {
+        private readonly ICategoryService _service;
 
+        public CategoryController(ICategoryService service)
         {
             _service = service;
         }

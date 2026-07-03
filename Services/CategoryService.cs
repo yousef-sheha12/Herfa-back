@@ -13,8 +13,9 @@ namespace Herfa_back.Services
             _repo = repo;
         }
 
+        public async Task<CategoryDto> AddAsync(CreateCategoryDto dto)
         {
-            var exists = await _repo.ExistsAsync(dto.Name, cancellationToken);
+            var exists = await _repo.ExistsAsync(dto.Name);
             if (exists)
                 throw new InvalidOperationException("Category already exists.");
 
@@ -44,6 +45,7 @@ namespace Herfa_back.Services
             return await _repo.ExistsAsync(name.Trim(), cancellationToken);
         }
         
+        public async Task<List<CategoryDto>> GetAllAsync()
         {
             var categories = await _repo.GetAllAsync();
 

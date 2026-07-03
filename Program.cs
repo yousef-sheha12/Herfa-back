@@ -14,141 +14,126 @@ using Microsoft.OpenApi.Models;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 
+var builder = WebApplication.CreateBuilder(args);
 
-namespace Herfa_back
+// ================= DATABASE =================
+builder.Services.AddDbContext<AppDbContext>(options =>
+     options.UseSqlServer(
+     builder.Configuration.GetConnectionString("DefaultConnection"),
+     sqlServerOptionsAction: sqlOptions =>
+     {
+          sqlOptions.EnableRetryOnFailure(
+          maxRetryCount: 5,           
+          maxRetryDelay: TimeSpan.FromSeconds(30), 
+          errorNumbersToAdd: null);
+     }
+));
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<IArtisanRepository, ArtisanRepository>();
+builder.Services.AddScoped<IServiceRequestRepository, ServiceRequestRepository>();
+builder.Services.AddScoped<IServiceOfferRepository, ServiceOfferRepository>();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddSingleton<JwtHelper>();
+
+// SignalR
+builder.Services.AddSignalR();
+
+// ================= JWT AUTH =================
+builder.Services.AddAuthentication(options =>
 {
-    public class Program
-    {
+    options.DefaultAuthenticateScheme =
+        JwtBearerDefaults.AuthenticationScheme;
+
+    options.DefaultChallengeScheme =
+        JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters =
+        new TokenValidationParameters
         {
-            var builder = WebApplication.CreateBuilder(args);
+            ValidateIssuer = true,
 
-            // ================= DATABASE =================
-            builder.Services.AddDbContext<AppDbContext>(options =>
-                 options.UseSqlServer(
-                 builder.Configuration.GetConnectionString("DefaultConnection"),
-                 sqlServerOptionsAction: sqlOptions =>
-                 {
-                      sqlOptions.EnableRetryOnFailure(
-                      maxRetryCount: 5,           
-                      maxRetryDelay: TimeSpan.FromSeconds(30), 
-                      errorNumbersToAdd: null);
-                 }
-            ));
+            ValidateAudience = true,
 
-           
+            ValidateLifetime = true,
 
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
-            builder.Services.AddScoped<IArtisanRepository, ArtisanRepository>();
-            builder.Services.AddScoped<IServiceRequestRepository, ServiceRequestRepository>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IServiceOfferRepository, ServiceOfferRepository>();
+            ValidateIssuerSigningKey = true,
 
+            ValidIssuer =
+                builder.Configuration["JWT:Issuer"],
 
+            ValidAudience =
+                builder.Configuration["JWT:Audience"],
 
-            // SignalR
-            builder.Services.AddSignalR();
-
-            // ================= JWT AUTH =================
-
-            builder.Services.AddAuthentication(options =>
+            IssuerSigningKey =
+                new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(
+                        builder.Configuration["JWT:Key"]!
+                    )
+                )
+        };
+    
+    // SignalR JWT Support
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/notifications"))
             {
-                options.DefaultAuthenticateScheme =
-                    JwtBearerDefaults.AuthenticationScheme;
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
+    };
+});
 
-                options.DefaultChallengeScheme =
-                    JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters =
-                    new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
+// ================= AUTHORIZATION =================
+builder.Services.AddAuthorization();
 
-                        ValidateAudience = true,
+// ================= CONTROLLERS =================
+builder.Services.AddControllers();
 
-                        ValidateLifetime = true,
+// ================= SWAGGER =================
+builder.Services.AddEndpointsApiExplorer();
 
-                        ValidateIssuerSigningKey = true,
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1",
+        new OpenApiInfo
+        {
+            Title = "Herfa API",
+            Version = "v1",
+            Description = "Authentication API with JWT"
+        });
 
-                        ValidIssuer =
-                            builder.Configuration["JWT:Issuer"],
+    // JWT Swagger Auth
+    options.AddSecurityDefinition("Bearer",
+        new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
 
-                        ValidAudience =
-                            builder.Configuration["JWT:Audience"],
+            Type = SecuritySchemeType.Http,
 
-                        IssuerSigningKey =
-                            new SymmetricSecurityKey(
-                                Encoding.UTF8.GetBytes(
-                                    builder.Configuration["JWT:Key"]!
-                                )
-                            )
-                    };
-                
-                // SignalR JWT Support
-                options.Events = new JwtBearerEvents
-                {
-                    OnMessageReceived = context =>
-                    {
-                        var accessToken = context.Request.Query["access_token"];
-                        var path = context.HttpContext.Request.Path;
-                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/notifications"))
-                        {
-                            context.Token = accessToken;
-                        }
-                        return Task.CompletedTask;
-                    }
-                };
-            });
+            Scheme = "bearer",
 
+            BearerFormat = "JWT",
 
-            // ================= AUTHORIZATION =================
+            In = ParameterLocation.Header,
 
-            builder.Services.AddAuthorization();
+            Description =
+                "Enter JWT Token like this: Bearer {your token}"
+        });
 
-
-            // ================= CONTROLLERS =================
-
-            builder.Services.AddControllers();
-
-
-            // ================= SWAGGER =================
-
-            builder.Services.AddEndpointsApiExplorer();
-
-            builder.Services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc("v1",
-                    new OpenApiInfo
-                    {
-                        Title = "Herfa API",
-                        Version = "v1",
-                        Description = "Authentication API with JWT"
-                    });
-
-                // JWT Swagger Auth
-                options.AddSecurityDefinition("Bearer",
-                    new OpenApiSecurityScheme
-                    {
-                        Name = "Authorization",
-
-                        Type = SecuritySchemeType.Http,
-
-                        Scheme = "bearer",
-
-                        BearerFormat = "JWT",
-
-                        In = ParameterLocation.Header,
-
-                        Description =
-                            "Enter JWT Token like this: Bearer {your token}"
-                    });
-
-                options.AddSecurityRequirement(
-                    new OpenApiSecurityRequirement
-                    {
+    options.AddSecurityRequirement(
+        new OpenApiSecurityRequirement
+        {
             {
                 new OpenApiSecurityScheme
                 {
@@ -162,71 +147,64 @@ namespace Herfa_back
 
                 Array.Empty<string>()
             }
-                    });
-            });
+        });
+});
 
+// ================= CORS =================
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
 
-            // ================= CORS =================
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll",
-                    policy =>
-                    {
-                              .AllowAnyMethod()
-                    });
-            });
+var app = builder.Build();
 
-            builder.Services.AddFluentValidationAutoValidation();
-            builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-
-
-            var app = builder.Build();
-
-            // ================= DATA SEEDING =================
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                try
-                {
-                    var context = services.GetRequiredService<AppDbContext>();
-                    await DataSeeder.SeedAsync(context);
-                }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred while seeding the database.");
-                }
-            }
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-
-                app.UseSwaggerUI();
-            }
-
-            // ================= MIDDLEWARE =================
-
-            app.UseHttpsRedirection();
-
-            app.UseCors("AllowAll");
-
-            app.UseAuthentication();
-
-            app.UseMiddleware<TokenBlacklistMiddleware>();
-
-            app.UseAuthorization();
-
-            // ================= MAP CONTROLLERS =================
-
-            app.MapControllers();
-            app.MapHub<NotificationHub>("/hubs/notifications");
-
-            // ================= RUN =================
-
-            app.Run();
-        }
+// ================= DATA SEEDING =================
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        await DataSeeder.SeedAsync(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
     }
 }
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+
+    app.UseSwaggerUI();
+}
+
+// ================= MIDDLEWARE =================
+app.UseHttpsRedirection();
+
+app.UseCors("AllowAll");
+
+app.UseAuthentication();
+
+app.UseMiddleware<TokenBlacklistMiddleware>();
+
+app.UseAuthorization();
+
+// ================= MAP CONTROLLERS =================
+app.MapControllers();
+app.MapHub<NotificationHub>("/hubs/notifications");
+
+// ================= RUN =================
+app.Run();

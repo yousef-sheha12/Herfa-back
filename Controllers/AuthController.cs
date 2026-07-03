@@ -56,8 +56,8 @@ namespace Herfa_back.Controllers
         {
             try
             {
-                await _authService.ForgotPasswordAsync(dto);
-                return Ok(new { message = "If the email exists, a reset link has been sent" });
+                var token = await _authService.ForgotPasswordAsync(dto);
+                return Ok(new { message = "If the email exists, a reset link has been sent", token });
             }
             catch (Exception ex)
             {
