@@ -6,6 +6,7 @@ using Herfa_back.Interfaces.IService;
 using Herfa_back.Middleware;
 using Herfa_back.Repositories;
 using Herfa_back.Services;
+using Herfa_back.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -18,7 +19,6 @@ namespace Herfa_back
 {
     public class Program
     {
-        public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -37,13 +37,18 @@ namespace Herfa_back
 
            
 
-            // ================= SERVICES =================
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+            builder.Services.AddScoped<IArtisanRepository, ArtisanRepository>();
+            builder.Services.AddScoped<IServiceRequestRepository, ServiceRequestRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IServiceOfferRepository, ServiceOfferRepository>();
 
-            builder.Services.AddScoped<IAuthService, AuthService>();
 
-            builder.Services.AddScoped<JwtHelper>();
 
+            // SignalR
+            builder.Services.AddSignalR();
 
             // ================= JWT AUTH =================
 
@@ -81,6 +86,21 @@ namespace Herfa_back
                                 )
                             )
                     };
+                
+                // SignalR JWT Support
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/notifications"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
 
@@ -153,9 +173,7 @@ namespace Herfa_back
                 options.AddPolicy("AllowAll",
                     policy =>
                     {
-                        policy.AllowAnyOrigin()
                               .AllowAnyMethod()
-                              .AllowAnyHeader();
                     });
             });
 
@@ -164,6 +182,22 @@ namespace Herfa_back
 
 
             var app = builder.Build();
+
+            // ================= DATA SEEDING =================
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<AppDbContext>();
+                    await DataSeeder.SeedAsync(context);
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred while seeding the database.");
+                }
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -188,6 +222,7 @@ namespace Herfa_back
             // ================= MAP CONTROLLERS =================
 
             app.MapControllers();
+            app.MapHub<NotificationHub>("/hubs/notifications");
 
             // ================= RUN =================
 

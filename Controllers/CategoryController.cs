@@ -1,5 +1,5 @@
 ﻿using Herfa_back.DTOs.Category;
-using Herfa_back.Services;
+using Herfa_back.Interfaces.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +9,7 @@ namespace Herfa_back.Controllers
     [Route("api/categories")]
     public class CategoryController : ControllerBase
     {
-        private readonly CategoryService _service;
 
-        public CategoryController(CategoryService service)
         {
             _service = service;
         }

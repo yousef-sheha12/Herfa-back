@@ -13,7 +13,6 @@ namespace Herfa_back.Services
             _repo = repo;
         }
 
-        public async Task<Category> AddAsync(CreateCategoryDto dto, CancellationToken cancellationToken = default)
         {
             var exists = await _repo.ExistsAsync(dto.Name, cancellationToken);
             if (exists)
@@ -45,7 +44,6 @@ namespace Herfa_back.Services
             return await _repo.ExistsAsync(name.Trim(), cancellationToken);
         }
         
-        public async Task<List<Category>> GetAllAsync()
         {
             var categories = await _repo.GetAllAsync();
 

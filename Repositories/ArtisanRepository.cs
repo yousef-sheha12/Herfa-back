@@ -54,6 +54,14 @@ namespace Herfa_back.Repositories
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
 
+        public async Task<ArtisanProfile?> GetByUserIdAsync(int userId)
+        {
+            return await _context.ArtisanProfiles
+                .Include(a => a.Category)
+                .Include(a => a.User)
+                .FirstOrDefaultAsync(a => a.UserId == userId);
+        }
+
         public async Task<bool> NationalIdExistsAsync(string nationalId)
         {
             return await _context.ArtisanProfiles

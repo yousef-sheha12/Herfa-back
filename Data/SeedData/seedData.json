@@ -1,0 +1,65 @@
+{
+  "Categories": [
+    {
+      "Name": "Plumbing",
+      "IconUrl": "https://example.com/icons/plumbing.png",
+      "Description": "All kinds of plumbing and water systems repairs."
+    },
+    {
+      "Name": "Electrical",
+      "IconUrl": "https://example.com/icons/electrical.png",
+      "Description": "Wiring, lighting, and electrical appliance repairs."
+    }
+  ],
+  "Users": [
+    {
+      "Username": "AdminSeed",
+      "Email": "admin@herfa.com",
+      "PasswordHash": "admin123",
+      "Role": "Admin"
+    },
+    {
+      "Username": "ClientSeed",
+      "Email": "client@herfa.com",
+      "PasswordHash": "password123",
+      "Role": "Client"
+    },
+    {
+      "Username": "ArtisanSeed",
+      "Email": "artisan@herfa.com",
+      "PasswordHash": "password123",
+      "Role": "Artisan"
+    }
+  ],
+  "ArtisanProfiles": [
+    {
+      "UserEmail": "artisan@herfa.com",
+      "CategoryName": "Plumbing",
+      "NationalId": "12345678901234",
+      "Bio": "Expert plumber with 10 years of experience.",
+      "City": "Cairo",
+      "Rating": 0.0,
+      "TotalReviews": 0,
+      "IsAvailable": true,
+      "IsVerified": true
+    }
+  ],
+  "ServiceRequests": [
+    {
+      "CategoryName": "Plumbing",
+      "ClientEmail": "client@herfa.com",
+      "Title": "Leaking kitchen sink",
+      "Description": "The pipe under the sink is leaking heavily and needs immediate replacement.",
+      "Address": "123 Main St, Appt 4",
+      "Status": "Completed"
+    }
+  ],
+  "Jobs": [
+    {
+      "ServiceRequestTitle": "Leaking kitchen sink",
+      "ArtisanEmail": "artisan@herfa.com",
+      "ClientEmail": "client@herfa.com",
+      "Status": "Completed"
+    }
+  ]
+}

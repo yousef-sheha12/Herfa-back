@@ -1,5 +1,5 @@
 ﻿using Herfa_back.DTOs.Artisan;
-using Herfa_back.Services;
+using Herfa_back.Interfaces.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +9,9 @@ namespace Herfa_back.Controllers
     [Route("api/artisans")]
     public class ArtisanController : ControllerBase
     {
-        private readonly ArtisanService _service;
+        private readonly IArtisanService _service;
 
-        public ArtisanController(ArtisanService service)
+        public ArtisanController(IArtisanService service)
         {
             _service = service;
         }
@@ -66,6 +66,14 @@ namespace Herfa_back.Controllers
             return await _service.VerifyAsync(id)
                 ? Ok("Artisan verified successfully.")
                 : NotFound("Artisan not found.");
+        }
+
+        // GET /artisans/:id/reviews
+        [HttpGet("{id}/reviews")]
+        public async Task<IActionResult> GetReviews(int id, [FromServices] IReviewService reviewService)
+        {
+            var reviews = await reviewService.GetReviewsByArtisanIdAsync(id);
+            return Ok(reviews);
         }
     }
 }

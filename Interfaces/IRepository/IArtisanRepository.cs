@@ -9,6 +9,7 @@ namespace Herfa_back.Interfaces.IRepository
         Task<bool> ToggleAvailabilityAsync(int artisanId);
         Task RecalculateRatingAsync(int artisanId);
         Task<List<ArtisanProfile>> GetAllAsync();
+        Task<ArtisanProfile?> GetByUserIdAsync(int userId);
         Task<ArtisanProfile?> GetByIdAsync(int id);
         Task AddAsync(ArtisanProfile artisan);
         Task UpdateAsync(ArtisanProfile artisan);

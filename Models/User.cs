@@ -9,9 +9,11 @@ namespace Herfa_back.Models
         public string PasswordHash { get; set; }= string.Empty;
         public string? AvatarUrl { get; set; }
         public UserRole Role { get; set; }
+
         public ArtisanProfile? ArtisanProfile { get; set; }
         public ICollection<ServiceRequest> ServiceRequests { get; set; }
         public ICollection<Notification> Notifications { get; set; }
+
 
     }
 }
