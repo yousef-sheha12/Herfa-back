@@ -35,9 +35,9 @@ namespace Herfa_back.Controllers
             return Ok(artisan);
         }
 
-        // POST /artisans/profile
+        // POST /artisan/profile
         [HttpPost("profile")]
-        public async Task<IActionResult> CreateProfile(CreateArtisanProfileDto dto)
+        public async Task<IActionResult> CreateProfile([FromForm] CreateArtisanProfileDto dto)
         {
             try
             {

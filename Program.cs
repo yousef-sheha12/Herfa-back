@@ -29,15 +29,37 @@ builder.Services.AddDbContext<AppDbContext>(options =>
      }
 ));
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
-builder.Services.AddScoped<IArtisanRepository, ArtisanRepository>();
-builder.Services.AddScoped<IServiceRequestRepository, ServiceRequestRepository>();
-builder.Services.AddScoped<IServiceOfferRepository, ServiceOfferRepository>();
+// ==================== REPOSITORIES & SERVICES ====================
 
+// --- Core & Authentication ---
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<JwtHelper>();
+
+// --- Review ---
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+
+// --- Client ---
+builder.Services.AddScoped<IClientService, ClientService>();
+
+// --- Artisan,Category & File (Mohamed Samy) ---
+builder.Services.AddScoped<IArtisanRepository, ArtisanRepository>();
+builder.Services.AddScoped<IArtisanService, ArtisanService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IFileService, FileService>();
+// --- Service Request & Offer (Dai) ---
+builder.Services.AddScoped<IServiceRequestRepository, ServiceRequestRepository>();
+builder.Services.AddScoped<IServiceRequestService, ServiceRequestService>();
+builder.Services.AddScoped<IServiceOfferRepository, ServiceOfferRepository>();
+builder.Services.AddScoped<IServiceOfferService, ServiceOfferService>();
+// --- Job (Abdelhameed) ---
+builder.Services.AddScoped<IJobRepository, JobRepository>();
+builder.Services.AddScoped<IJobService, JobService>();
+// --- Notification ---
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 // SignalR
 builder.Services.AddSignalR();
@@ -195,6 +217,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
+
+app.UseStaticFiles(); // بيسمح بقراءة الملفات من فولدر wwwroot
 
 app.UseAuthentication();
 
