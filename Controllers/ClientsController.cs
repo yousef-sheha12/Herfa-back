@@ -52,10 +52,11 @@ namespace Herfa_back.Controllers
         }
 
         [HttpPut("me/profile")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ClientProfileDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateClientProfileDto dto)
         {
             var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -64,10 +65,15 @@ namespace Herfa_back.Controllers
                 return Unauthorized();
             }
 
-            var success = await _clientService.UpdateProfileAsync(userId, dto);
-            if (!success) return NotFound("Client profile not found.");
+            var result = await _clientService.UpdateProfileAsync(userId, dto);
 
-            return Ok(new { message = "Profile updated successfully." });
+            return result switch
+            {
+                UpdateProfileResult.NotFound => NotFound(new { message = "Client profile not found." }),
+                UpdateProfileResult.EmailConflict => Conflict(new { message = "The provided email is already in use by another account." }),
+                UpdateProfileResult.Success => Ok(await _clientService.GetProfileAsync(userId)),
+                _ => StatusCode(StatusCodes.Status500InternalServerError)
+            };
         }
     }
 }

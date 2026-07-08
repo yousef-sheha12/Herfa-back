@@ -182,6 +182,59 @@ namespace Herfa_back.Data
                     await context.SaveChangesAsync();
                 }
             }
+
+            // 6. Seed Reviews
+            if (seedData.Reviews != null && seedData.Reviews.Any())
+            {
+                foreach (var rev in seedData.Reviews)
+                {
+                    var request = await context.ServiceRequests
+                        .FirstOrDefaultAsync(r => r.Title == rev.ServiceRequestTitle);
+                    var clientUser = await context.Users
+                        .FirstOrDefaultAsync(u => u.Email == rev.ClientEmail);
+                    var artisanUser = await context.Users
+                        .FirstOrDefaultAsync(u => u.Email == rev.ArtisanEmail);
+
+                    if (request == null || clientUser == null || artisanUser == null)
+                        continue;
+
+                    var artisanProfile = await context.ArtisanProfiles
+                        .FirstOrDefaultAsync(p => p.UserId == artisanUser.Id);
+                    var job = await context.Jobs
+                        .FirstOrDefaultAsync(j =>
+                            j.ServiceRequestId == request.Id &&
+                            j.ArtisanId == artisanProfile!.Id &&
+                            j.ClientId == clientUser.Id);
+
+                    if (artisanProfile == null || job == null)
+                        continue;
+
+                    // Skip if a review already exists for this job
+                    var exists = await context.Reviews.AnyAsync(r => r.JobId == job.Id);
+                    if (exists) continue;
+
+                    var review = new Review
+                    {
+                        JobId     = job.Id,
+                        ClientId  = clientUser.Id,
+                        ArtisanId = artisanProfile.Id,
+                        Rating    = rev.Rating,
+                        Comment   = rev.Comment,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    };
+
+                    await context.Reviews.AddAsync(review);
+
+                    // Keep artisan aggregates in sync
+                    var newRating = (artisanProfile.Rating * artisanProfile.TotalReviews + rev.Rating)
+                                    / (artisanProfile.TotalReviews + 1);
+                    artisanProfile.TotalReviews += 1;
+                    artisanProfile.Rating        = newRating;
+                }
+
+                await context.SaveChangesAsync();
+            }
         }
     }
 
@@ -193,6 +246,7 @@ namespace Herfa_back.Data
         public List<ArtisanProfileSeed>? ArtisanProfiles { get; set; }
         public List<ServiceRequestSeed>? ServiceRequests { get; set; }
         public List<JobSeed>? Jobs { get; set; }
+        public List<ReviewSeed>? Reviews { get; set; }
     }
 
     public class CategorySeed
@@ -239,5 +293,14 @@ namespace Herfa_back.Data
         public string ArtisanEmail { get; set; } = string.Empty;
         public string ClientEmail { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
+    }
+
+    public class ReviewSeed
+    {
+        public string ServiceRequestTitle { get; set; } = string.Empty;
+        public string ClientEmail { get; set; } = string.Empty;
+        public string ArtisanEmail { get; set; } = string.Empty;
+        public int Rating { get; set; }
+        public string? Comment { get; set; }
     }
 }

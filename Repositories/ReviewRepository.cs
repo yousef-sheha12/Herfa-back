@@ -30,7 +30,7 @@ namespace Herfa_back.Repositories
         {
             return await _context.Reviews
                 .Include(r => r.Client)
-                .Where(r => r.ArtisanId == artisanId)
+                .Where(r => r.ArtisanId == artisanId && !r.IsDeleted)
                 .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();
         }
