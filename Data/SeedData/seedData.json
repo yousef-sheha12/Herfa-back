@@ -9,6 +9,11 @@
       "Name": "Electrical",
       "IconUrl": "https://example.com/icons/electrical.png",
       "Description": "Wiring, lighting, and electrical appliance repairs."
+    },
+    {
+      "Name": "Carpentry",
+      "IconUrl": "https://example.com/icons/carpentry.png",
+      "Description": "Furniture assembly, woodwork, and cabinet installation."
     }
   ],
   "Users": [
@@ -19,47 +24,180 @@
       "Role": "Admin"
     },
     {
-      "Username": "ClientSeed",
-      "Email": "client@herfa.com",
+      "Username": "ClientAlice",
+      "Email": "alice@herfa.com",
       "PasswordHash": "password123",
       "Role": "Client"
     },
     {
-      "Username": "ArtisanSeed",
-      "Email": "artisan@herfa.com",
+      "Username": "ClientBob",
+      "Email": "bob@herfa.com",
+      "PasswordHash": "password123",
+      "Role": "Client"
+    },
+    {
+      "Username": "ArtisanKarim",
+      "Email": "karim@herfa.com",
+      "PasswordHash": "password123",
+      "Role": "Artisan"
+    },
+    {
+      "Username": "ArtisanSalma",
+      "Email": "salma@herfa.com",
+      "PasswordHash": "password123",
+      "Role": "Artisan"
+    },
+    {
+      "Username": "ArtisanOmar",
+      "Email": "omar@herfa.com",
       "PasswordHash": "password123",
       "Role": "Artisan"
     }
   ],
   "ArtisanProfiles": [
     {
-      "UserEmail": "artisan@herfa.com",
+      "UserEmail": "karim@herfa.com",
       "CategoryName": "Plumbing",
       "NationalId": "12345678901234",
-      "Bio": "Expert plumber with 10 years of experience.",
+      "Bio": "Expert plumber with 10 years of experience in residential and commercial projects.",
       "City": "Cairo",
       "Rating": 0.0,
       "TotalReviews": 0,
       "IsAvailable": true,
       "IsVerified": true
+    },
+    {
+      "UserEmail": "salma@herfa.com",
+      "CategoryName": "Electrical",
+      "NationalId": "98765432109876",
+      "Bio": "Licensed electrician specialising in smart-home wiring and solar installations.",
+      "City": "Alexandria",
+      "Rating": 0.0,
+      "TotalReviews": 0,
+      "IsAvailable": true,
+      "IsVerified": true
+    },
+    {
+      "UserEmail": "omar@herfa.com",
+      "CategoryName": "Carpentry",
+      "NationalId": "11223344556677",
+      "Bio": "Skilled carpenter focused on custom furniture and kitchen cabinet installation.",
+      "City": "Giza",
+      "Rating": 0.0,
+      "TotalReviews": 0,
+      "IsAvailable": true,
+      "IsVerified": false
     }
   ],
   "ServiceRequests": [
     {
       "CategoryName": "Plumbing",
-      "ClientEmail": "client@herfa.com",
+      "ClientEmail": "alice@herfa.com",
       "Title": "Leaking kitchen sink",
       "Description": "The pipe under the sink is leaking heavily and needs immediate replacement.",
-      "Address": "123 Main St, Appt 4",
+      "Address": "12 Nile St, Apt 4, Cairo",
+      "Status": "Completed"
+    },
+    {
+      "CategoryName": "Plumbing",
+      "ClientEmail": "bob@herfa.com",
+      "Title": "Bathroom tap replacement",
+      "Description": "Both bathroom taps need replacing with modern mixer taps.",
+      "Address": "7 Garden City, Cairo",
+      "Status": "Completed"
+    },
+    {
+      "CategoryName": "Electrical",
+      "ClientEmail": "alice@herfa.com",
+      "Title": "Circuit breaker upgrade",
+      "Description": "Main panel needs a 200-amp service upgrade before summer.",
+      "Address": "12 Nile St, Apt 4, Cairo",
+      "Status": "Completed"
+    },
+    {
+      "CategoryName": "Electrical",
+      "ClientEmail": "bob@herfa.com",
+      "Title": "Install outdoor lighting",
+      "Description": "Need four outdoor spotlights installed around the garden perimeter.",
+      "Address": "7 Garden City, Cairo",
+      "Status": "Completed"
+    },
+    {
+      "CategoryName": "Carpentry",
+      "ClientEmail": "alice@herfa.com",
+      "Title": "Kitchen cabinet installation",
+      "Description": "New kitchen cabinets delivered, need professional installation.",
+      "Address": "12 Nile St, Apt 4, Cairo",
       "Status": "Completed"
     }
   ],
   "Jobs": [
     {
       "ServiceRequestTitle": "Leaking kitchen sink",
-      "ArtisanEmail": "artisan@herfa.com",
-      "ClientEmail": "client@herfa.com",
+      "ArtisanEmail": "karim@herfa.com",
+      "ClientEmail": "alice@herfa.com",
       "Status": "Completed"
+    },
+    {
+      "ServiceRequestTitle": "Bathroom tap replacement",
+      "ArtisanEmail": "karim@herfa.com",
+      "ClientEmail": "bob@herfa.com",
+      "Status": "Completed"
+    },
+    {
+      "ServiceRequestTitle": "Circuit breaker upgrade",
+      "ArtisanEmail": "salma@herfa.com",
+      "ClientEmail": "alice@herfa.com",
+      "Status": "Completed"
+    },
+    {
+      "ServiceRequestTitle": "Install outdoor lighting",
+      "ArtisanEmail": "salma@herfa.com",
+      "ClientEmail": "bob@herfa.com",
+      "Status": "Completed"
+    },
+    {
+      "ServiceRequestTitle": "Kitchen cabinet installation",
+      "ArtisanEmail": "omar@herfa.com",
+      "ClientEmail": "alice@herfa.com",
+      "Status": "Completed"
+    }
+  ],
+  "Reviews": [
+    {
+      "ServiceRequestTitle": "Leaking kitchen sink",
+      "ClientEmail": "alice@herfa.com",
+      "ArtisanEmail": "karim@herfa.com",
+      "Rating": 5,
+      "Comment": "Karim was incredibly professional — fixed the leak in under an hour."
+    },
+    {
+      "ServiceRequestTitle": "Bathroom tap replacement",
+      "ClientEmail": "bob@herfa.com",
+      "ArtisanEmail": "karim@herfa.com",
+      "Rating": 4,
+      "Comment": "Good work, arrived on time. Taps look and feel great."
+    },
+    {
+      "ServiceRequestTitle": "Circuit breaker upgrade",
+      "ClientEmail": "alice@herfa.com",
+      "ArtisanEmail": "salma@herfa.com",
+      "Rating": 5,
+      "Comment": "Salma knew exactly what she was doing. Very clean job, highly recommend."
+    },
+    {
+      "ServiceRequestTitle": "Install outdoor lighting",
+      "ClientEmail": "bob@herfa.com",
+      "ArtisanEmail": "salma@herfa.com",
+      "Rating": 3,
+      "Comment": "Lights work fine but the job took longer than expected."
+    },
+    {
+      "ServiceRequestTitle": "Kitchen cabinet installation",
+      "ClientEmail": "alice@herfa.com",
+      "ArtisanEmail": "omar@herfa.com",
+      "Rating": 4,
+      "Comment": "Omar did a solid job on the cabinets. Very happy with the result."
     }
   ]
 }

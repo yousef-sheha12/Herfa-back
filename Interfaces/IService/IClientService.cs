@@ -6,6 +6,6 @@ namespace Herfa_back.Interfaces.IService
     {
         Task<ClientDashboardDto> GetDashboardStatsAsync(int clientId);
         Task<ClientProfileDto?> GetProfileAsync(int clientId);
-        Task<bool> UpdateProfileAsync(int clientId, UpdateClientProfileDto dto);
+        Task<UpdateProfileResult> UpdateProfileAsync(int clientId, UpdateClientProfileDto dto);
     }
 }

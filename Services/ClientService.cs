@@ -66,16 +66,27 @@ namespace Herfa_back.Services
             };
         }
 
-        public async Task<bool> UpdateProfileAsync(int clientId, UpdateClientProfileDto dto)
+        public async Task<UpdateProfileResult> UpdateProfileAsync(int clientId, UpdateClientProfileDto dto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == clientId && !u.IsDeleted);
-            if (user == null) return false;
+            if (user == null) return UpdateProfileResult.NotFound;
+
+            // Enforce email uniqueness — skip check if the user is keeping their current email
+            if (!string.Equals(user.Email, dto.Email, StringComparison.OrdinalIgnoreCase))
+            {
+                var emailTaken = await _context.Users
+                    .AnyAsync(u => u.Id != clientId && !u.IsDeleted &&
+                                   u.Email.ToLower() == dto.Email.ToLower());
+
+                if (emailTaken) return UpdateProfileResult.EmailConflict;
+            }
 
             user.Username = dto.Username;
+            user.Email = dto.Email;
             user.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
-            return true;
+            return UpdateProfileResult.Success;
         }
     }
 }

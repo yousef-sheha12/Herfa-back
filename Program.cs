@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Herfa_back.Data;
 using Herfa_back.Helpers;
 using Herfa_back.Interfaces.IRepository;
@@ -187,6 +187,9 @@ builder.Services.AddCors(options =>
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
+            // Configure the HTTP request pipeline.
+            app.UseSwagger();
+            app.UseSwaggerUI();
 var app = builder.Build();
 
 // ================= DATA SEEDING =================
