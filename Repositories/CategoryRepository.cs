@@ -22,10 +22,10 @@ namespace Herfa_back.Repositories
             return category;
         }
 
-        public async Task<bool> ExistsAsync(string name, CancellationToken cancellationToken)
+        public async Task<bool> ExistsAsync(string name, CancellationToken cancellationToken = default)
         {
             return await _context.Categories
-                .AnyAsync(c => c.Name.ToLower() == name.ToLower());
+                .AnyAsync(c => c.Name.ToLower() == name.ToLower(), cancellationToken);
         }
 
         public async Task<List<Category>> GetAllAsync()

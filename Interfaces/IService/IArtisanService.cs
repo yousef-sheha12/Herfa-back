@@ -14,5 +14,6 @@ namespace Herfa_back.Interfaces.IService
         Task<List<ArtisanDto>> GetByCityAsync(string city);
         Task<bool> ToggleAvailabilityAsync(int artisanId);
         Task RecalculateRatingAsync(int artisanId);
+        Task UpdateProfileImageAsync(int id, IFormFile imageFile);
     }
 }

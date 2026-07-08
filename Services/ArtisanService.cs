@@ -2,15 +2,18 @@
 using Herfa_back.Interfaces.IService;
 using Herfa_back.Models;
 using Herfa_back.Repositories;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Herfa_back.Services
 {
     public class ArtisanService : IArtisanService
     {
         private readonly ArtisanRepository _Repo;
-        public ArtisanService(ArtisanRepository repo)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public ArtisanService(ArtisanRepository repo, IWebHostEnvironment webHostEnvironment)
         {
             _Repo = repo;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // جيب كل الحرفيين
@@ -59,13 +62,40 @@ namespace Herfa_back.Services
             if (exists)
                 throw new InvalidOperationException("National ID already exists.");
 
+            // Save the image file and get the path
+            string? dbImagePath = null;
+            if(dto.ImageFile != null && dto.ImageFile.Length > 0)
+            {
+                //1- Save the image file to the images folder in wwwroot and get the relative path
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                // Ensure the uploads folder exists
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                // 2. توليد اسم فريد للصورة عشان لو حرفيين رفعوا صورتين بنفس الاسم ميمسحوش بعض
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + dto.ImageFile.FileName;
+
+                //3- حفظ الصورة في المجلد
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                //4- حفظ الصورة في المجلد
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await dto.ImageFile.CopyToAsync(fileStream);
+                }
+
+                dbImagePath = Path.Combine("images", uniqueFileName); // Save the relative path to the database
+            }
+            // 5- إنشاء نموذج الحرفي الجديد
             var artisan = new ArtisanProfile   //  DTO → Model هنا
             {
                 UserId = dto.UserId,
                 CategoryId = dto.CategoryId,
                 NationalId = dto.NationalId,
                 Bio = dto.Bio,
-                City = dto.City
+                City = dto.City,
+                ImagePath = dbImagePath
             };
 
             await _Repo.AddAsync(artisan);

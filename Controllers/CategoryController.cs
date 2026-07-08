@@ -1,5 +1,6 @@
-using Herfa_back.DTOs.Category;
+﻿using Herfa_back.DTOs.Category;
 using Herfa_back.Interfaces.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +27,7 @@ namespace Herfa_back.Controllers
 
         // POST /categories
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(CreateCategoryDto dto)
         {
             try

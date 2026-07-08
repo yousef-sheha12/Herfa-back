@@ -7,6 +7,8 @@ namespace Herfa_back.Models
         public int ServiceRequestId { get; set; }
         public int ArtisanId { get; set; }
         public string Message { get; set; }
+        public string Title { get; set; } = null!;
+        public string Description { get; set; } = null!;
         public decimal Price { get; set; }
         public ServiceOfferStatus Status { get; set; }
 

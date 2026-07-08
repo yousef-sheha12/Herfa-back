@@ -5,6 +5,7 @@
         public int UserId { get; set; }          // FK → User
         public int CategoryId { get; set; }      // FK → Category
         public string NationalId { get; set; }   // 15 digits, unique
+        public string? ImagePath { get; set; }   // مسار الصورة الشخصية
         public string? Bio { get; set; }
         public string? City { get; set; }
         public float Rating { get; set; } = 0;   // متوسط التقييم

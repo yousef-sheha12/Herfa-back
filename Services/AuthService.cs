@@ -104,23 +104,23 @@ namespace Herfa_back.Services
             };
         }
 
-        public async Task ForgotPasswordAsync(ForgotPasswordDto dto)
+        public async Task<string> ForgotPasswordAsync(ForgotPasswordDto dto)
         {
             var user = await _userRepository.GetByEmailAsync(dto.Email);
+            if (user == null) throw new Exception("User not found");
 
-            if (user is not null)
+            var resetToken = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
+            var resetTokenEntity = new PasswordResetToken
             {
-                var resetToken = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
-                var resetTokenEntity = new PasswordResetToken
-                {
-                    Email = dto.Email,
-                    Token = resetToken,
-                    ExpiresAt = DateTime.UtcNow.AddHours(1)
-                };
+                Email = dto.Email,
+                Token = resetToken,
+                ExpiresAt = DateTime.UtcNow.AddHours(1)
+            };
 
-                await _userRepository.AddPasswordResetTokenAsync(resetTokenEntity);
-                await _userRepository.SaveChangesAsync();
-            }
+            await _userRepository.AddPasswordResetTokenAsync(resetTokenEntity);
+            await _userRepository.SaveChangesAsync();
+
+            return resetToken;
         }
 
         public async Task ResetPasswordAsync(ResetPasswordDto dto)
