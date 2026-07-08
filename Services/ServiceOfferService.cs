@@ -40,10 +40,40 @@ namespace Herfa_back.Services
 
         public async Task<OfferDto> CreateOfferAsync(CreateOfferDto dto, int requestId, int artisanUserId)
         {
-
+            //check the artisan is exist 
             var artisan = await _artisanRepository.GetByUserIdAsync(artisanUserId);
             if (artisan == null) throw new Exception("Artisan profile not found.");
 
+            //check the request is exist 
+            var request = await _requestRepository.GetByIdAsync(requestId);
+            if (request == null)
+                throw new Exception("Service request not found.");
+            
+            //check the request status still aviable for offers
+            if (request.Status != ServiceRequestStatus.Open)
+                throw new Exception("This request is no longer accepting offers.");
+            
+            //check the Artisan apply only for requests from his category
+            if (artisan.CategoryId != request.CategoryId)
+                throw new Exception("You cannot submit an offer outside your category.");
+            
+
+            //check the artisan did not submit more than one request 
+            var existingOffer = await _offerRepository.GetByRequestAndArtisanAsync(requestId, artisan.Id);
+            if (existingOffer != null)
+                throw new Exception("You have already submitted an offer for this request.");
+
+            //validation for offer price and message
+            if (dto.Price <= 0)
+               throw new Exception("Price must be greater than zero.");
+           if (string.IsNullOrWhiteSpace(dto.Message))
+               throw new Exception("Offer message is required.");
+
+           //validation for artisan verfication
+           /* if (!artisan.IsVerified)
+             throw new Exception("Your account must be verified before submitting offers.");*/
+           
+            
             var offer = new ServiceOffer
             {
                 ServiceRequestId = requestId,
@@ -59,7 +89,6 @@ namespace Herfa_back.Services
             await _offerRepository.SaveChangesAsync();
 
             // Notify the client
-            var request = await _requestRepository.GetByIdAsync(requestId);
             if (request != null && artisan != null)
             {
                 await _notificationService.SendAsync(
