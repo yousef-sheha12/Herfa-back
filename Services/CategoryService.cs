@@ -1,14 +1,15 @@
 ﻿using Herfa_back.DTOs.Category;
+using Herfa_back.Interfaces.IRepository;
 using Herfa_back.Interfaces.IService;
 using Herfa_back.Models;
-using Herfa_back.Repositories;
+
 namespace Herfa_back.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly CategoryRepository _repo;
+        private readonly ICategoryRepository _repo;
 
-        public CategoryService(CategoryRepository repo)
+        public CategoryService(ICategoryRepository repo)
         {
             _repo = repo;
         }

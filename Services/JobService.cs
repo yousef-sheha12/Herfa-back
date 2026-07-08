@@ -1,4 +1,5 @@
 using Herfa_back.DTOs.Jobs;
+using Herfa_back.Interfaces.IRepository;
 using Herfa_back.Interfaces.IService;
 using Herfa_back.Models;
 using Herfa_back.Models.Enums;
@@ -8,10 +9,10 @@ namespace Herfa_back.Services
 {
     public class JobService : IJobService
     {
-        private readonly JobRepository _repo;
+        private readonly IJobRepository _repo;
         private readonly INotificationService _notificationService;// after Person 5
 
-        public JobService(JobRepository repo, INotificationService notificationService)// after Person 5
+        public JobService(IJobRepository repo, INotificationService notificationService)// after Person 5
         {
             _repo = repo;
             _notificationService = notificationService;

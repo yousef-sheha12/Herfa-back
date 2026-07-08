@@ -1,16 +1,16 @@
 ﻿using Herfa_back.DTOs.Artisan;
+using Herfa_back.Interfaces.IRepository;
 using Herfa_back.Interfaces.IService;
 using Herfa_back.Models;
-using Herfa_back.Repositories;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Herfa_back.Services
 {
     public class ArtisanService : IArtisanService
     {
-        private readonly ArtisanRepository _Repo;
+        private readonly IArtisanRepository _Repo;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public ArtisanService(ArtisanRepository repo, IWebHostEnvironment webHostEnvironment)
+        public ArtisanService(IArtisanRepository repo, IWebHostEnvironment webHostEnvironment)
         {
             _Repo = repo;
             _webHostEnvironment = webHostEnvironment;
@@ -99,6 +99,46 @@ namespace Herfa_back.Services
             };
 
             await _Repo.AddAsync(artisan);
+        }
+
+        // غيّر الصورة الشخصية
+        public async Task UpdateProfileImageAsync(int id, IFormFile imageFile)
+        {
+            var artisan = await _Repo.GetByIdAsync(id);
+            if (artisan == null)
+                throw new KeyNotFoundException("Artisan not found.");
+
+            if (imageFile == null || imageFile.Length == 0)
+                throw new InvalidOperationException("Please select an image file.");
+
+            // حذف الصورة القديمة لو موجودة
+            if (!string.IsNullOrEmpty(artisan.ImagePath))
+            {
+                var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, artisan.ImagePath);
+                if (File.Exists(oldImagePath))
+                {
+                    File.Delete(oldImagePath);
+                }
+            }
+
+            // حفظ الصورة الجديدة
+            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            string uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(fileStream);
+            }
+
+            // تحديث المسار في الداتابيز
+            artisan.ImagePath = Path.Combine("images", uniqueFileName);
+            await _Repo.UpdateAsync(artisan);
         }
 
         // عدّل Profile

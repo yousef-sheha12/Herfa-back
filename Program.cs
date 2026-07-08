@@ -187,10 +187,9 @@ builder.Services.AddCors(options =>
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
-            // Configure the HTTP request pipeline.
-            app.UseSwagger();
-            app.UseSwaggerUI();
+          
 var app = builder.Build();
+
 
 // ================= DATA SEEDING =================
 using (var scope = app.Services.CreateScope())
